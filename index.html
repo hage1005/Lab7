@@ -85,21 +85,91 @@
       // the writeup to view the URL pattern for fetch one and fetch all
       function fetchAll() {
         // TODO
-      }
+        let url = document.getElementById('endpoint').value;
+        let out = document.getElementById('output');
+        fetch(url, {
+        method: 'get',
+              headers: {
+                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+              },
+            })
+            .then(response => response.json())
+            .then(function (data) {
+              console.log('Request succeeded with JSON response', data);
+              out.innerHTML = JSON.stringify(data);
+            })
+            .catch(function (error) {
+              console.log('Request failed', error);
+            });
+          }
 
       // This function should fetch one entry from the given endpoint.
       // From the 4 CRUD actions, this is the READ action, and uses the GET http method.
       // The main difference from fetchAll() will be the URL you request from; check
       // the writeup to view the URL pattern for fetch one and fetch all
       function fetchOne() {
+        let sign = prompt("Enter record ID");
+        let url = document.getElementById('endpoint').value + '/' + sign;
+        let out = document.getElementById('output');
+        fetch(url, {
+        method: 'get',
+              headers: {
+                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+              },
+            })
+            .then(response => response.json())
+            .then(function (data) {
+              console.log('Request succeeded with JSON response', data);
+              out.textContent = JSON.stringify(data);
+            })
+            .catch(function (error) {
+              console.log('Request failed', error);
+            });
+          }
         // TODO
-      }
+
 
       // This function should use fetch to create one entry in the given endpoint.
       // From the 4 CRUD actions, this is the CREATE action, and uses the POST http method.
       // The main difference from updateRecord() will be the URL you send data to; check
       // the writeup to view the URL pattern for create and update
       function createRecord() {
+        console.log(arguments[0]);
+        switch (arguments[0]){
+          case 'show':
+          document.getElementById('recordForm').style.display = "block";
+          break;
+          case 'submit':
+              const inputForm = document.getElementById('recordForm');
+              var data = new FormData(inputForm);
+              let author = data.get('author');
+              let title = data.get('title');
+              let url = document.getElementById('endpoint').value;
+              let out = document.getElementById('output');
+              var dataJson = {
+                author: author,
+                title: title
+              };
+              fetch(url, {
+              method: 'post',
+                    headers: {
+                      "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+                    },
+                    body: `author=${author}&title=${title}`
+                  })
+                  .then(response => response.json())
+                  .then(function (data) {
+                    console.log('Request succeeded with JSON response', data);
+                    out.textContent = JSON.stringify(data);
+                  })
+                  .catch(function (error) {
+                    console.log('Request failed', error);
+                  });
+                  document.getElementById('recordForm').style.display = "none";
+                  break;
+          default:
+            console.log("not allowed");
+        }
         // TODO
       }
 
@@ -109,16 +179,68 @@
       // the writeup to view the URL pattern for create and update
       function updateRecord() {
         // TODO
+        switch (arguments[0]){
+          case 'show':
+          document.getElementById('recordForm').style.display = "block";
+          document.getElementById('recordIDcontainer').style.display = "block";
+          break;
+          case 'submit':
+              const inputForm = document.getElementById('recordForm');
+              var data = new FormData(inputForm);
+              let id = data.get('recordID');
+              let author = data.get('author');
+              let title = data.get('title');
+              let url = document.getElementById('endpoint').value + '/' + id;
+              let out = document.getElementById('output');
+              fetch(url, {
+              method: 'put',
+                    headers: {
+                      "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+                    },
+                    body: `author=${author}&title=${title}`
+                  })
+                  .then(response => response.json())
+                  .then(function (data) {
+                    console.log('Request succeeded with JSON response', data);
+                    out.textContent = JSON.stringify(data);
+                  })
+                  .catch(function (error) {
+                    console.log('Request failed', error);
+                  });
+                  document.getElementById('recordForm').style.display = "none";
+                  document.getElementById('recordIDcontainer').style.display = "none";
+                  break;
+          default:
+            console.log("not allowed");
+        }
       }
 
       // This function should use fetch to delete one existing entry in the given endpoint.
       // From the 4 CRUD actions, this is the DELETE action, and uses the DELETE http method.
       // The main difference from fetchOne() will be the HTTP method you use to make your
-      // request; check the writeup to view the URL pattern for get one and delete. THERE IS NO 
+      // request; check the writeup to view the URL pattern for get one and delete. THERE IS NO
       // delete all, only delete one.
       function deleteRecord() {
+        let sign = prompt("Enter record ID");
+        let url = document.getElementById('endpoint').value + '/' + sign;
+        let out = document.getElementById('output');
+        fetch(url, {
+        method: 'delete',
+              headers: {
+                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+              },
+            })
+            .then(response => response.json())
+            .then(function (data) {
+              console.log('Request succeeded with JSON response', data);
+              out.textContent = JSON.stringify(data);
+            })
+            .catch(function (error) {
+              console.log('Request failed', error);
+            });
+          }
         // TODO
-      }
+
 
       window.addEventListener('DOMContentLoaded', () => {
         // Action Form Event Listener
@@ -155,7 +277,7 @@
           .addEventListener("submit", event => {
             event.preventDefault();
             let command = document.getElementById('action').value;
-            
+
             switch (command) {
               case "Create":
                 createRecord('submit');
