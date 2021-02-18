@@ -93,13 +93,19 @@
                 "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
               },
             })
-            .then(response => response.json())
+            .then(response => {
+              if(!response.ok) {
+                document.getElementById("output").textContent = "Network Error: " + response.status;
+              }
+              return response.json();
+            })
             .then(function (data) {
               console.log('Request succeeded with JSON response', data);
               out.innerHTML = JSON.stringify(data);
             })
             .catch(function (error) {
               console.log('Request failed', error);
+              out.innerHTML = JSON.stringify(error);
             });
           }
 
@@ -111,19 +117,29 @@
         let sign = prompt("Enter record ID");
         let url = document.getElementById('endpoint').value + '/' + sign;
         let out = document.getElementById('output');
+        let ok = true;
         fetch(url, {
         method: 'get',
               headers: {
                 "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
               },
             })
-            .then(response => response.json())
+            .then(response => {
+              ok = response.ok;
+              if(!ok) {
+                console.log(response);
+                out.textContent = "Network Error: " + response.status;
+              }
+              return response.json();
+            })
             .then(function (data) {
+              if(ok){
               console.log('Request succeeded with JSON response', data);
-              out.textContent = JSON.stringify(data);
+              out.textContent = JSON.stringify(data);}
             })
             .catch(function (error) {
               console.log('Request failed', error);
+              out.innerHTML = error;
             });
           }
         // TODO
@@ -164,6 +180,7 @@
                   })
                   .catch(function (error) {
                     console.log('Request failed', error);
+                    out.innerHTML = JSON.stringify(error);
                   });
                   document.getElementById('recordForm').style.display = "none";
                   break;
@@ -192,6 +209,7 @@
               let title = data.get('title');
               let url = document.getElementById('endpoint').value + '/' + id;
               let out = document.getElementById('output');
+              let ok = true;
               fetch(url, {
               method: 'put',
                     headers: {
@@ -199,13 +217,22 @@
                     },
                     body: `author=${author}&title=${title}`
                   })
-                  .then(response => response.json())
+                  .then(response => {
+                    ok = response.ok;
+                    if(!ok) {
+                      console.log(response);
+                      out.textContent = "Network Error: " + response.status;
+                    }
+                    return response.json();
+                  })
                   .then(function (data) {
+                    if(ok){
                     console.log('Request succeeded with JSON response', data);
-                    out.textContent = JSON.stringify(data);
+                    out.textContent = JSON.stringify(data);}
                   })
                   .catch(function (error) {
                     console.log('Request failed', error);
+                    out.innerHTML = JSON.stringify(error);
                   });
                   document.getElementById('recordForm').style.display = "none";
                   document.getElementById('recordIDcontainer').style.display = "none";
@@ -224,19 +251,29 @@
         let sign = prompt("Enter record ID");
         let url = document.getElementById('endpoint').value + '/' + sign;
         let out = document.getElementById('output');
+        let ok = true;
         fetch(url, {
         method: 'delete',
               headers: {
                 "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
               },
             })
-            .then(response => response.json())
+            .then(response => {
+              ok = response.ok;
+              if(!ok) {
+                console.log(response);
+                out.textContent = "Network Error: " + response.status;
+              }
+              return response.json();
+            })
             .then(function (data) {
+              if(ok){
               console.log('Request succeeded with JSON response', data);
-              out.textContent = JSON.stringify(data);
+              out.textContent = JSON.stringify(data);}
             })
             .catch(function (error) {
               console.log('Request failed', error);
+              out.innerHTML = error;
             });
           }
         // TODO
